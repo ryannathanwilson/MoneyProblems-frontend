@@ -3,13 +3,16 @@ import "./App.css";
 import CreateUser from "./pages/CreateUser";
 import Login from "./pages/Login";
 import Transaction from "./pages/Transaction";
+import Overview from "./pages/Overview";
+import Category from "./pages/Category";
 import { useAppStore } from "./components/store";
 import { refreshAccessToken } from "./api/auth";
+import Header from "./components/Header";
 
 export interface Handlers {
   handleLogin: () => void;
-  handleShowLogin: (status: boolean) => void;
-  handleShowCreateUser: (status: boolean) => void;
+  handleShowLogin: () => void;
+  handleShowCreateUser: () => void;
 }
 
 function App() {
@@ -23,6 +26,7 @@ function App() {
     setTimeout(() => setStore({ ...store, loggedIn: true }), 500);
   };
   const handleShowLogin = () => {
+    localStorage.clear();
     setStore({ ...store, loggedIn: false });
     setShowCreateUser(false);
     setTimeout(() => setShowLogin(true), 500);
@@ -43,13 +47,17 @@ function App() {
     if (tokenExpire !== undefined) {
       clearTimeout(tokenExpire);
     }
-    const refreshedToken = await refreshAccessToken();
-    if (refreshedToken.userLoggedIn) {
-      localStorage.setItem("accessToken", refreshedToken.accessToken);
-      localStorage.setItem("refreshToken", refreshedToken.refreshToken);
-      handleLogin();
-    } else {
-      localStorage.clear();
+    try {
+      const refreshedToken = await refreshAccessToken();
+      if (refreshedToken.userLoggedIn) {
+        localStorage.setItem("accessToken", refreshedToken.accessToken);
+        localStorage.setItem("refreshToken", refreshedToken.refreshToken);
+        handleLogin();
+      } else {
+        handleShowLogin();
+      }
+    } catch (error) {
+      console.log(error);
       handleShowLogin();
     }
     tokenExpire = setTimeout(silentlyRefreshToken, 270000);
@@ -58,27 +66,24 @@ function App() {
   useEffect(() => {
     silentlyRefreshToken();
   }, []);
-  useEffect(() => {
-    console.log(showLogin);
-  }, [showLogin]);
 
   useEffect(() => {
     if (store.loggedIn === false) {
       handleShowLogin();
-    } else {
+    } else if (store.loggedIn === true) {
       handleLogin();
     }
     // eslint-disable-next-line
   },[store.loggedIn]);
-  // if loggedIn false then show loading screen
-  // if loggedIn true show transaction screen
 
   return (
     <div className="App">
-      {/* menu bar with logout */}
+      <Header handlers={handlers} />
       <Login handlers={handlers} showLogin={showLogin} />
       <CreateUser handlers={handlers} showCreateUser={showCreateUser} />
       <Transaction />
+      <Overview />
+      <Category />
     </div>
   );
 }

@@ -28,6 +28,17 @@ export default function CreateUser({
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
+  const resetLocalState = () => {
+    setUsername("");
+    setUserNameError(false);
+    setEmail("");
+    setUserNameError(false);
+    setPassword("");
+    setPasswordError(false);
+    setConfirmPassword("");
+    setConfirmPasswordError(false);
+  };
+
   const handleCreateUser = async () => {
     if (password === confirmPassword) {
       setIsFetching(true);
@@ -37,6 +48,7 @@ export default function CreateUser({
         if (userLoggedIn) {
           localStorage.setItem("accessToken", userLoggedIn.accessToken);
           localStorage.setItem("refreshToken", userLoggedIn.refreshToken);
+          resetLocalState();
           setIsFetching(false);
           handlers.handleLogin();
         }
@@ -103,7 +115,12 @@ export default function CreateUser({
         >
           Create Account
         </LoadingButton>
-        <Button onClick={() => handlers.handleShowLogin(true)}>
+        <Button
+          onClick={() => {
+            handlers.handleShowLogin();
+            resetLocalState();
+          }}
+        >
           Return to login
         </Button>
       </FormBox>

@@ -13,26 +13,20 @@ export default function Transaction() {
   const [amount, setAmount] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [date, setDate] = useState<Date | null>(null);
-  const [delayedAppear, setDelayedApear] = useState<boolean>(false);
   const handleCreateTransaction = async () => {
     console.log("working");
   };
-  useEffect(() => {
-    if (store.loggedIn) {
-      setTimeout(() => setDelayedApear(true), 300);
-    }
-  }, [store.loggedIn]);
 
   return (
     <Slide
       direction="up"
       timeout={300}
-      in={delayedAppear}
+      in={store.loggedIn}
       mountOnEnter
       unmountOnExit
     >
       <FormBox component="form">
-        <Typography variant="h1" component="div" gutterBottom>
+        <Typography variant="h2" component="div" gutterBottom>
           Add expense
         </Typography>
         <TextField

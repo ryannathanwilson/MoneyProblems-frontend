@@ -19,13 +19,21 @@ export default function Login({ handlers, showLogin }: LoginInterface) {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
+  const resetLocalState = () => {
+    setUsername("");
+    setUserNameError(false);
+    setPassword("");
+    setPasswordError(false);
+    setErrorMessage("");
+  };
+
   const handleLoginUser = async () => {
     const loginResponse = await loginUser(username, password);
     setIsFetching(false);
-    console.log(loginResponse.userLoggedIn);
     if (loginResponse.userLoggedIn) {
       localStorage.setItem("accessToken", loginResponse.accessToken);
       localStorage.setItem("refreshToken", loginResponse.refreshToken);
+      resetLocalState();
       handlers.handleLogin();
     } else {
       setUsername("");
@@ -34,10 +42,6 @@ export default function Login({ handlers, showLogin }: LoginInterface) {
       setPasswordError(true);
       setErrorMessage("Username or password was incorrect");
     }
-  };
-
-  const handleGoToCreateUser = () => {
-    handlers.handleShowCreateUser(true);
   };
 
   return (
@@ -69,7 +73,14 @@ export default function Login({ handlers, showLogin }: LoginInterface) {
         >
           Log in
         </LoadingButton>
-        <Button onClick={handleGoToCreateUser}>Go to sign up</Button>
+        <Button
+          onClick={() => {
+            handlers.handleShowCreateUser();
+            resetLocalState();
+          }}
+        >
+          Go to sign up
+        </Button>
       </FormBox>
     </Slide>
   );
