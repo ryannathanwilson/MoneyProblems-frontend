@@ -6,12 +6,10 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
 import FormBox from "../components/FormBox";
+import { useAppStore } from "../components/store";
 
-interface TransactionInterface {
-  loggedIn: boolean;
-}
-
-export default function Transaction({ loggedIn }: TransactionInterface) {
+export default function Transaction() {
+  const { store } = useAppStore();
   const [amount, setAmount] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [date, setDate] = useState<Date | null>(null);
@@ -20,10 +18,10 @@ export default function Transaction({ loggedIn }: TransactionInterface) {
     console.log("working");
   };
   useEffect(() => {
-    if (loggedIn) {
+    if (store.loggedIn) {
       setTimeout(() => setDelayedApear(true), 300);
     }
-  }, [loggedIn]);
+  }, [store.loggedIn]);
 
   return (
     <Slide
