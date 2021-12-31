@@ -3,6 +3,12 @@ import React, { useContext, createContext } from "react";
 interface GlobalState {
   username: string;
   loggedIn?: boolean | undefined;
+  categories?: [
+    {
+      category: string;
+      categoryId: string;
+    }
+  ];
 }
 
 export const initialStore: GlobalState = {

@@ -8,6 +8,7 @@ import Category from "./pages/Category";
 import { useAppStore } from "./components/store";
 import { refreshAccessToken } from "./api/auth";
 import Header from "./components/Header";
+import Budget from "./pages/Budget";
 
 export interface Handlers {
   handleLogin: () => void;
@@ -84,6 +85,7 @@ function App() {
       <Transaction />
       <Overview />
       <Category />
+      <Budget />
     </div>
   );
 }

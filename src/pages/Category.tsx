@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Typography, TextField, Slide } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SendIcon from "@mui/icons-material/Send";
 import FormBox from "../components/FormBox";
 import { useAppStore } from "../components/store";
-import { createCategory } from "../api/categories";
+import { createCategory, getCategories } from "../api/categories";
 
 export default function Category() {
-  const { store } = useAppStore();
+  const { store, setStore } = useAppStore();
   const [category, setCategory] = useState<string>("");
 
   const handleCreateCategory = async () => {
@@ -16,6 +16,25 @@ export default function Category() {
       setCategory("");
     }
   };
+  const setAllCategories = async () => {
+    const categories = await getCategories();
+    console.log(`cats long ${categories[0].categoryId}`);
+    const simpleCategories = categories.map((cat: any) => {
+      return {
+        category: cat.category,
+        categoryId: cat.categoryId,
+      };
+    });
+    console.log(`shortened ${simpleCategories[0].categoryId}`);
+    setStore({ ...store, categories: simpleCategories });
+  };
+
+  useEffect(() => {
+    if (store.loggedIn) {
+      setAllCategories();
+    }
+    // eslint-disable-next-line
+  }, [store.loggedIn]);
 
   return (
     <Slide
