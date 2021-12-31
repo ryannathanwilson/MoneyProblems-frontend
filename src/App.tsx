@@ -24,16 +24,26 @@ function App() {
   const handleLogin = () => {
     setShowLogin(false);
     setShowCreateUser(false);
-    setTimeout(() => setStore({ ...store, loggedIn: true }), 500);
+    setTimeout(
+      () =>
+        setStore((prevStore) => {
+          return { ...prevStore, loggedIn: true };
+        }),
+      500
+    );
   };
   const handleShowLogin = () => {
     localStorage.clear();
-    setStore({ ...store, loggedIn: false });
+    setStore((prevStore) => {
+      return { ...prevStore, loggedIn: false };
+    });
     setShowCreateUser(false);
     setTimeout(() => setShowLogin(true), 500);
   };
   const handleShowCreateUser = () => {
-    setStore({ ...store, loggedIn: false });
+    setStore((prevStore) => {
+      return { ...prevStore, loggedIn: false };
+    });
     setShowLogin(false);
     setTimeout(() => setShowCreateUser(true), 500);
   };

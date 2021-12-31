@@ -1,18 +1,18 @@
 import React, { useContext, createContext } from "react";
 
+interface Category {
+  category: string;
+  categoryId: string;
+}
 interface GlobalState {
-  username: string;
-  loggedIn?: boolean | undefined;
-  categories?: [
-    {
-      category: string;
-      categoryId: string;
-    }
-  ];
+  username?: string;
+  loggedIn: boolean | undefined;
+  categories: Category[];
 }
 
 export const initialStore: GlobalState = {
-  username: "",
+  loggedIn: undefined,
+  categories: [] as Category[],
 };
 
 interface AppContextProps {

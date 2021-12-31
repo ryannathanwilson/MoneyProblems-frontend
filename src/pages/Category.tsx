@@ -12,7 +12,17 @@ export default function Category() {
 
   const handleCreateCategory = async () => {
     if (category) {
-      await createCategory(category);
+      const newCategory = await createCategory(category);
+      setStore((prevStore) => {
+        prevStore.categories.push({
+          category: newCategory.category,
+          categoryId: newCategory.categoryId,
+        });
+        return {
+          ...prevStore,
+          categories: prevStore.categories,
+        };
+      });
       setCategory("");
     }
   };
@@ -26,7 +36,9 @@ export default function Category() {
       };
     });
     console.log(`shortened ${simpleCategories[0].categoryId}`);
-    setStore({ ...store, categories: simpleCategories });
+    setStore((prevStore) => {
+      return { ...prevStore, categories: simpleCategories };
+    });
   };
 
   useEffect(() => {
@@ -44,7 +56,13 @@ export default function Category() {
       mountOnEnter
       unmountOnExit
     >
-      <FormBox component="form">
+      <FormBox
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleCreateCategory();
+        }}
+        component="form"
+      >
         <Typography variant="h2" component="div" gutterBottom>
           Add category
         </Typography>
@@ -55,7 +73,7 @@ export default function Category() {
           label="Category"
         />
         <LoadingButton
-          onClick={handleCreateCategory}
+          type="submit"
           endIcon={<SendIcon />}
           loading={false}
           loadingPosition="end"

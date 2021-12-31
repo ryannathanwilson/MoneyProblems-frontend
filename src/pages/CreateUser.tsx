@@ -74,7 +74,13 @@ export default function CreateUser({
 
   return (
     <Slide direction="down" in={showCreateUser} mountOnEnter unmountOnExit>
-      <FormBox component="form">
+      <FormBox
+        component="form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleCreateUser();
+        }}
+      >
         <Typography variant="h1" component="div" gutterBottom>
           Sign Up
         </Typography>
@@ -108,7 +114,7 @@ export default function CreateUser({
           helperText={errorMessage}
         />
         <LoadingButton
-          onClick={handleCreateUser}
+          type="submit"
           loading={isFetching}
           loadingIndicator="Loading..."
           variant="contained"

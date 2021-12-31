@@ -15,19 +15,22 @@ import FormBox from "../components/FormBox";
 
 export default function Budget() {
   const { store } = useAppStore();
-  const [category, setCategory] = useState<string>("");
+  const [categoryId, setCategoryId] = useState<string>("");
   const [date, setDate] = useState<Date | null>(new Date());
   const [amount, setAmount] = useState<string>("");
 
   const handleCreateBudget = async () => {
     if (date !== null) {
-      await createBudget(
+      const newBudgetItem = await createBudget(
         parseFloat(amount),
         date.getMonth(),
         date.getFullYear(),
-        "okayhere."
+        categoryId
       );
-      setCategory("");
+      console.log(newBudgetItem);
+      setCategoryId("");
+      setAmount("");
+      setDate(new Date());
     }
   };
 
@@ -39,28 +42,35 @@ export default function Budget() {
       mountOnEnter
       unmountOnExit
     >
-      <FormBox component="form">
+      <FormBox
+        component="form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleCreateBudget();
+        }}
+      >
         <Typography variant="h2" component="div" gutterBottom>
           Add budget item
         </Typography>
         <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Age</InputLabel>
+          <InputLabel id="demo-simple-select-label">Category</InputLabel>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={category}
+            value={categoryId}
             label="Category"
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => setCategoryId(e.target.value)}
+            sx={{
+              textAlign: "left",
+            }}
           >
-            {store.categories?.map((cat) => {
+            {store.categories.map((cat) => {
               return (
-                <MenuItem key={cat.categoryId} value={cat.category}>
+                <MenuItem key={cat.categoryId} value={cat.categoryId}>
                   {cat.category}
                 </MenuItem>
               );
             })}
-            <MenuItem value="hi">hello</MenuItem>
-            <MenuItem value="me">hi</MenuItem>
           </Select>
         </FormControl>
         <TextField
@@ -88,7 +98,7 @@ export default function Budget() {
           />
         </LocalizationProvider>
         <LoadingButton
-          onClick={handleCreateBudget}
+          type="submit"
           endIcon={<SendIcon />}
           loading={false}
           loadingPosition="end"

@@ -1,6 +1,15 @@
+import { useAppStore } from "../components/store";
 import config from "../config";
 
-export async function createCategory(category: string): Promise<any> {
+interface CategoryModel {
+  categoryId: string;
+  category: string;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+}
+
+export async function createCategory(category: string): Promise<CategoryModel> {
   const categoryCreated = await fetch(`${config.api.baseurl}/category`, {
     method: "POST",
     headers: {

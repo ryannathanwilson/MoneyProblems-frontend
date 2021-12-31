@@ -46,7 +46,13 @@ export default function Login({ handlers, showLogin }: LoginInterface) {
 
   return (
     <Slide direction="right" in={showLogin} mountOnEnter unmountOnExit>
-      <FormBox component="form">
+      <FormBox
+        component="form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleLoginUser();
+        }}
+      >
         <Typography variant="h1" component="div" gutterBottom>
           Log In
         </Typography>
@@ -66,7 +72,7 @@ export default function Login({ handlers, showLogin }: LoginInterface) {
           helperText={errorMessage}
         />
         <LoadingButton
-          onClick={handleLoginUser}
+          type="submit"
           loading={isFetching}
           loadingIndicator="Loading..."
           variant="contained"

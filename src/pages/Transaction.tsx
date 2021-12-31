@@ -1,20 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Typography, TextField, Slide } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SendIcon from "@mui/icons-material/Send";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
-import FormBox from "../components/FormBox";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import { useAppStore } from "../components/store";
+import FormBox from "../components/FormBox";
+import { createTransaction } from "../api/transactions";
 
 export default function Transaction() {
   const { store } = useAppStore();
   const [amount, setAmount] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
-  const [date, setDate] = useState<Date | null>(null);
+  const [categoryId, setCategoryId] = useState<string>("");
+  const [date, setDate] = useState<Date | null>(new Date());
   const handleCreateTransaction = async () => {
-    console.log("working");
+    if (date !== null) {
+      const newTransaction = await createTransaction(
+        parseInt(amount, 10),
+        categoryId,
+        date
+      );
+      console.log(newTransaction);
+      setAmount("");
+    }
   };
 
   return (
@@ -25,16 +38,37 @@ export default function Transaction() {
       mountOnEnter
       unmountOnExit
     >
-      <FormBox component="form">
+      <FormBox
+        component="form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleCreateTransaction();
+        }}
+      >
         <Typography variant="h2" component="div" gutterBottom>
           Add expense
         </Typography>
-        <TextField
-          value={category}
-          // eslint-disable-next-line
-          onChange={(e) => setCategory(e.target.value)}
-          label="Category"
-        />
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Category</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={categoryId}
+            label="Category"
+            onChange={(e) => setCategoryId(e.target.value)}
+            sx={{
+              textAlign: "left",
+            }}
+          >
+            {store.categories.map((cat) => {
+              return (
+                <MenuItem key={cat.categoryId} value={cat.categoryId}>
+                  {cat.category}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
         <TextField
           value={amount}
           // eslint-disable-next-line
@@ -55,7 +89,7 @@ export default function Transaction() {
           />
         </LocalizationProvider>
         <LoadingButton
-          onClick={handleCreateTransaction}
+          type="submit"
           endIcon={<SendIcon />}
           loading={false}
           loadingPosition="end"
