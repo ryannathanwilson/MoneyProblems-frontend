@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
 import CreateUser from "./pages/CreateUser";
 import Login from "./pages/Login";
 import Transaction from "./pages/Transaction";
