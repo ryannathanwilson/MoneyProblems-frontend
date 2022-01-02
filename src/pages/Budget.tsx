@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Typography, TextField, Slide } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SendIcon from "@mui/icons-material/Send";
@@ -14,7 +14,7 @@ import { useAppStore } from "../components/store";
 import FormBox from "../components/FormBox";
 
 export default function Budget() {
-  const { store } = useAppStore();
+  const { store, setStore } = useAppStore();
   const [categoryId, setCategoryId] = useState<string>("");
   const [date, setDate] = useState<Date | null>(new Date());
   const [amount, setAmount] = useState<string>("");
@@ -27,7 +27,23 @@ export default function Budget() {
         date.getFullYear(),
         categoryId
       );
-      console.log(newBudgetItem);
+      if (
+        newBudgetItem.year === new Date().getFullYear() &&
+        newBudgetItem.month <= new Date().getMonth()
+      )
+        setStore((prevStore) => {
+          prevStore.budgets.push({
+            amount: newBudgetItem.amount,
+            month: newBudgetItem.month,
+            year: newBudgetItem.year,
+            categoryId: newBudgetItem.categoryId,
+            budgetId: newBudgetItem.budgetId,
+          });
+          return {
+            ...prevStore,
+            budgets: prevStore.budgets,
+          };
+        });
       setCategoryId("");
       setAmount("");
       setDate(new Date());
@@ -104,7 +120,7 @@ export default function Budget() {
           loadingPosition="end"
           variant="contained"
         >
-          Create new category
+          Create new budget item
         </LoadingButton>
       </FormBox>
     </Slide>

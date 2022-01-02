@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Typography, TextField, Slide } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SendIcon from "@mui/icons-material/Send";
@@ -14,19 +14,31 @@ import FormBox from "../components/FormBox";
 import { createTransaction } from "../api/transactions";
 
 export default function Transaction() {
-  const { store } = useAppStore();
+  const { store, setStore } = useAppStore();
   const [amount, setAmount] = useState<string>("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [date, setDate] = useState<Date | null>(new Date());
   const handleCreateTransaction = async () => {
     if (date !== null) {
       const newTransaction = await createTransaction(
-        parseInt(amount, 10),
+        parseFloat(amount),
         categoryId,
         date
       );
-      console.log(newTransaction);
+      setStore((prevState) => {
+        prevState.transactions.push({
+          amount: parseFloat(newTransaction.amount),
+          categoryId: newTransaction.categoryId,
+          date: new Date(newTransaction.date),
+        });
+        return {
+          ...prevState,
+          transactions: prevState.transactions,
+        };
+      });
       setAmount("");
+      setCategoryId("");
+      setDate(new Date());
     }
   };
 

@@ -9,6 +9,9 @@ import { useAppStore } from "./components/store";
 import { refreshAccessToken } from "./api/auth";
 import Header from "./components/Header";
 import Budget from "./pages/Budget";
+import { getCategories } from "./api/categories";
+import { getBudgetYearToDate } from "./api/budget";
+import { getTransactionsYearToDate } from "./api/transactions";
 
 export interface Handlers {
   handleLogin: () => void;
@@ -20,6 +23,50 @@ function App() {
   const { store, setStore } = useAppStore();
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const [showCreateUser, setShowCreateUser] = useState<boolean>(false);
+
+  const populateStore = async () => {
+    const categories = await getCategories();
+    const storeCategories = categories.map((cat: any) => {
+      return {
+        category: cat.category,
+        categoryId: cat.categoryId,
+      };
+    });
+    const today = new Date();
+    const thisMonthBudget = await getBudgetYearToDate(today.getFullYear());
+    const storeBudget = thisMonthBudget.map((budget: any) => {
+      return {
+        amount: parseInt(budget.amount, 10),
+        budgetId: budget.budgetId,
+        categoryId: budget.categoryId,
+        month: budget.month,
+      };
+    });
+    const transactions = await getTransactionsYearToDate(today.getFullYear());
+    const storeTransactions = transactions.map((transaction: any) => {
+      return {
+        amount: parseFloat(transaction.amount),
+        categoryId: transaction.categoryId,
+        date: transaction.date,
+      };
+    });
+
+    setStore((prevStore) => {
+      return {
+        ...prevStore,
+        categories: storeCategories,
+        budgets: storeBudget,
+        transactions: storeTransactions,
+      };
+    });
+  };
+
+  useEffect(() => {
+    if (store.loggedIn) {
+      populateStore();
+    }
+    // eslint-disable-next-line
+    },[store.loggedIn])
 
   const handleLogin = () => {
     setShowLogin(false);
@@ -53,7 +100,7 @@ function App() {
     handleShowCreateUser,
   };
 
-  let tokenExpire: any;
+  let tokenExpire: ReturnType<typeof setTimeout>;
   const silentlyRefreshToken = async () => {
     if (tokenExpire !== undefined) {
       clearTimeout(tokenExpire);
@@ -68,7 +115,6 @@ function App() {
         handleShowLogin();
       }
     } catch (error) {
-      console.log(error);
       handleShowLogin();
     }
     tokenExpire = setTimeout(silentlyRefreshToken, 270000);
@@ -76,6 +122,7 @@ function App() {
 
   useEffect(() => {
     silentlyRefreshToken();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {

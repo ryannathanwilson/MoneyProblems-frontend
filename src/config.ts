@@ -6,7 +6,8 @@ interface Config {
 
 const config: Config = {
   api: {
-    baseurl: "http://localhost:3001/api",
+    // baseurl: "http://localhost:3001/api",
+    baseurl: "https://mo-money-mo-problems.herokuapp.com/api",
   },
 };
 

@@ -23,7 +23,6 @@ export async function loginUser(
 
 export async function refreshAccessToken(): Promise<LoginTokens> {
   const currentToken = localStorage.getItem("refreshToken");
-  console.log(currentToken);
   const newTokens = await fetch(`${config.api.baseurl}/auth/refresh-token`, {
     method: "POST",
     headers: { "content-type": "application/json" },

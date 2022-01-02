@@ -22,6 +22,19 @@ export async function createBudget(
   return budgetCreated;
 }
 
+export async function getBudgetYearToDate(year: number) {
+  const allBudgetItems = await fetch(
+    `${config.api.baseurl}/budget/by-year/${year}`,
+    {
+      method: "GET",
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    }
+  ).then((response) => response.json());
+  return allBudgetItems;
+}
+
 export async function getBudgetsByUser() {
   const allBudgetItems = await fetch(`${config.api.baseurl}/budget`, {
     method: "GET",

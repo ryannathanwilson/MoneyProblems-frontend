@@ -26,27 +26,6 @@ export default function Category() {
       setCategory("");
     }
   };
-  const setAllCategories = async () => {
-    const categories = await getCategories();
-    console.log(`cats long ${categories[0].categoryId}`);
-    const simpleCategories = categories.map((cat: any) => {
-      return {
-        category: cat.category,
-        categoryId: cat.categoryId,
-      };
-    });
-    console.log(`shortened ${simpleCategories[0].categoryId}`);
-    setStore((prevStore) => {
-      return { ...prevStore, categories: simpleCategories };
-    });
-  };
-
-  useEffect(() => {
-    if (store.loggedIn) {
-      setAllCategories();
-    }
-    // eslint-disable-next-line
-  }, [store.loggedIn]);
 
   return (
     <Slide
