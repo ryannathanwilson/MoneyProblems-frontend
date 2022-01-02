@@ -5,6 +5,7 @@ export async function createBudget(
   month: number,
   year: number,
   categoryId: string
+  // eslint-disable-next-line
 ): Promise<any> {
   const budgetCreated = await fetch(`${config.api.baseurl}/budget`, {
     method: "POST",

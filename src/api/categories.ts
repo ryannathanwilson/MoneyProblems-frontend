@@ -1,4 +1,3 @@
-import { useAppStore } from "../components/store";
 import config from "../config";
 
 interface CategoryModel {

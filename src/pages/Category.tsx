@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Typography, TextField, Slide } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SendIcon from "@mui/icons-material/Send";
 import FormBox from "../components/FormBox";
 import { useAppStore } from "../components/store";
-import { createCategory, getCategories } from "../api/categories";
+import { createCategory } from "../api/categories";
 
 export default function Category() {
   const { store, setStore } = useAppStore();

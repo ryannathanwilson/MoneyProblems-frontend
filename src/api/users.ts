@@ -4,6 +4,7 @@ export async function createUser(
   username: string,
   email: string,
   password: string
+  // eslint-disable-next-line
 ): Promise<any> {
   const userCreated = await fetch(`${config.api.baseurl}/user`, {
     method: "POST",

@@ -4,6 +4,7 @@ export async function createTransaction(
   amount: number,
   categoryId: string,
   date: Date
+  // eslint-disable-next-line
 ): Promise<any> {
   const year = date.getFullYear();
   const transactionCreated = await fetch(`${config.api.baseurl}/transaction`, {

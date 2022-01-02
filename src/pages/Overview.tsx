@@ -15,8 +15,10 @@ export default function Overview() {
   const [overview, setOverview] = useState<OverviewInterface[] | undefined>();
   useEffect(() => {
     const newOverview: OverviewInterface[] = store.categories.map(
+      // eslint-disable-next-line
       (cat: any) => {
         const monthExpenses = store.transactions
+          // eslint-disable-next-line
           .filter((exp: any) => {
             return (
               new Date(exp.date).getMonth() === new Date().getMonth() &&
@@ -24,24 +26,28 @@ export default function Overview() {
             );
           })
           .reduce(
+            // eslint-disable-next-line
             (total: number, transaction: any) => total + transaction.amount,
             0
           );
         const ytdExpenses = store.transactions
+          // eslint-disable-next-line
           .filter((transaction: any) => {
             return transaction.categoryId === cat.categoryId;
           })
           .reduce(
+            // eslint-disable-next-line
             (total: number, transaction: any) => total + transaction.amount,
             0
           );
+        // eslint-disable-next-line
         const monthBudgetItem = store.budgets.find((item: any) => {
-          console.log(item);
           return (
             item.categoryId === cat.categoryId &&
             item.month === new Date().getMonth()
           );
         }) || { amount: 0 };
+        // eslint-disable-next-line
         const ytdBudgetItems = store.budgets.filter((item: any) => {
           return (
             item.categoryId === cat.categoryId &&
@@ -49,6 +55,7 @@ export default function Overview() {
           );
         }) || { amount: 0 };
         const ytdBudget = ytdBudgetItems.reduce(
+          // eslint-disable-next-line
           (total: number, budget: any) => total + budget.amount,
           0
         );

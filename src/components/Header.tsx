@@ -14,7 +14,7 @@ interface HeaderInterface {
 }
 
 export default function Header({ handlers }: HeaderInterface) {
-  const { store, setStore } = useAppStore();
+  const { store } = useAppStore();
   return (
     <Slide direction="down" in={store.loggedIn} mountOnEnter unmountOnExit>
       <AppBar position="static">

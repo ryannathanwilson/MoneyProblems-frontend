@@ -26,6 +26,7 @@ function App() {
 
   const populateStore = async () => {
     const categories = await getCategories();
+    // eslint-disable-next-line
     const storeCategories = categories.map((cat: any) => {
       return {
         category: cat.category,
@@ -34,6 +35,7 @@ function App() {
     });
     const today = new Date();
     const thisMonthBudget = await getBudgetYearToDate(today.getFullYear());
+    // eslint-disable-next-line
     const storeBudget = thisMonthBudget.map((budget: any) => {
       return {
         amount: parseInt(budget.amount, 10),
@@ -43,6 +45,7 @@ function App() {
       };
     });
     const transactions = await getTransactionsYearToDate(today.getFullYear());
+    // eslint-disable-next-line
     const storeTransactions = transactions.map((transaction: any) => {
       return {
         amount: parseFloat(transaction.amount),
