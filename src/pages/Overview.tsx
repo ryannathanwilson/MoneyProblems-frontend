@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Slide } from "@mui/material";
+import { Typography, Slide, Paper } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import { useAppStore, OverviewInterface } from "../components/store";
 import FormBox from "../components/FormBox";
 
@@ -85,7 +84,7 @@ export default function Overview() {
         <Typography variant="h2" component="div" gutterBottom>
           Overview
         </Typography>
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} elevation={4}>
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
