@@ -14,7 +14,6 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import LoadingButton from "@mui/lab/LoadingButton";
-import SendIcon from "@mui/icons-material/Send";
 import { useAppStore } from "../components/store";
 import FormBox from "../components/FormBox";
 import {
@@ -160,7 +159,6 @@ export default function Category() {
         />
         <LoadingButton
           type="submit"
-          endIcon={<SendIcon />}
           loading={false}
           loadingPosition="end"
           variant="contained"

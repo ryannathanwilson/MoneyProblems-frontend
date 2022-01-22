@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Typography, TextField, Slide } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import SendIcon from "@mui/icons-material/Send";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
@@ -115,7 +114,6 @@ export default function Budget() {
         </LocalizationProvider>
         <LoadingButton
           type="submit"
-          endIcon={<SendIcon />}
           loading={false}
           loadingPosition="end"
           variant="contained"

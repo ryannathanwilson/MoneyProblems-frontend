@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from "react";
+import {
+  CssBaseline,
+  ThemeProvider,
+  createTheme,
+  PaletteMode,
+} from "@mui/material";
 import CreateUser from "./pages/CreateUser";
 import Login from "./pages/Login";
 import Transaction from "./pages/Transaction";
@@ -11,17 +17,22 @@ import Budget from "./pages/Budget";
 import { getCategories } from "./api/categories";
 import { getBudgetYearToDate } from "./api/budget";
 import { getTransactionsYearToDate } from "./api/transactions";
+import AllTransactions from "./pages/AllTransactions";
+import getDesignTokens from "./theme";
 
 export interface Handlers {
   handleLogin: () => void;
   handleShowLogin: () => void;
   handleShowCreateUser: () => void;
+  handleThemeToggle: () => void;
 }
 
 function App() {
   const { store, setStore } = useAppStore();
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const [showCreateUser, setShowCreateUser] = useState<boolean>(false);
+  const [mode, setMode] = useState<PaletteMode>("light");
+  const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
   const populateStore = async () => {
     const categories = await getCategories();
@@ -45,10 +56,14 @@ function App() {
     });
     const transactions = await getTransactionsYearToDate(today.getFullYear());
     // eslint-disable-next-line
-    const storeTransactions = transactions.map((transaction: any) => {
+    const storeTransactions = transactions.map((transaction) => {
       return {
-        amount: parseFloat(transaction.amount),
-        categoryId: transaction.categoryId,
+        transactionId: transaction.transactionId,
+        amount: transaction.amount,
+        category: {
+          categoryId: transaction.category.categoryId,
+          category: transaction.category.category,
+        },
         date: transaction.date,
       };
     });
@@ -96,10 +111,16 @@ function App() {
     setShowLogin(false);
     setTimeout(() => setShowCreateUser(true), 500);
   };
+
+  const handleThemeToggle = () => {
+    setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+  };
+
   const handlers: Handlers = {
     handleLogin,
     handleShowLogin,
     handleShowCreateUser,
+    handleThemeToggle,
   };
 
   let tokenExpire: ReturnType<typeof setTimeout>;
@@ -137,15 +158,19 @@ function App() {
   },[store.loggedIn]);
 
   return (
-    <div className="App">
-      <Header handlers={handlers} />
-      <Login handlers={handlers} showLogin={showLogin} />
-      <CreateUser handlers={handlers} showCreateUser={showCreateUser} />
-      <Transaction />
-      <Overview />
-      <Category />
-      <Budget />
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <div className="App">
+        <Header handlers={handlers} />
+        <Login handlers={handlers} showLogin={showLogin} />
+        <CreateUser handlers={handlers} showCreateUser={showCreateUser} />
+        <Transaction />
+        <AllTransactions />
+        <Overview />
+        <Category />
+        <Budget />
+      </div>
+    </ThemeProvider>
   );
 }
 

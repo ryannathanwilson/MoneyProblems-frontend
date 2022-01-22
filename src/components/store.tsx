@@ -1,19 +1,21 @@
 import React, { useContext, createContext } from "react";
 
-interface Category {
+export interface CategoryInterface {
   category: string;
   categoryId: string;
 }
-interface Budget {
+export interface BudgetInterface {
   amount: number;
   budgetId: string;
   categoryId: string;
   month: number;
   year: number;
 }
-interface Transaction {
+export interface TransactionInterface {
+  transactionId: string;
   amount: number;
-  categoryId: string;
+  category: { categoryId: string; category: string };
+  note?: string;
   date: Date;
 }
 export interface OverviewInterface {
@@ -26,17 +28,17 @@ export interface OverviewInterface {
 interface GlobalState {
   username?: string;
   loggedIn: boolean | undefined;
-  categories: Category[];
-  budgets: Budget[];
-  transactions: Transaction[];
+  categories: CategoryInterface[];
+  budgets: BudgetInterface[];
+  transactions: TransactionInterface[];
   overview: OverviewInterface[];
 }
 
 export const initialStore: GlobalState = {
   loggedIn: undefined,
-  categories: [] as Category[],
-  budgets: [] as Budget[],
-  transactions: [] as Transaction[],
+  categories: [] as CategoryInterface[],
+  budgets: [] as BudgetInterface[],
+  transactions: [] as TransactionInterface[],
   overview: [] as OverviewInterface[],
 };
 

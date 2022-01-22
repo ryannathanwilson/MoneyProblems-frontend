@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Typography, TextField, Slide } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import SendIcon from "@mui/icons-material/Send";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
@@ -9,13 +8,14 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { useAppStore } from "../components/store";
+import { useAppStore, CategoryInterface } from "../components/store";
 import FormBox from "../components/FormBox";
 import { createTransaction } from "../api/transactions";
 
 export default function Transaction() {
   const { store, setStore } = useAppStore();
   const [amount, setAmount] = useState<string>("");
+  const [note, setNote] = useState<string>("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [date, setDate] = useState<Date | null>(new Date());
   const handleCreateTransaction = async () => {
@@ -23,12 +23,18 @@ export default function Transaction() {
       const newTransaction = await createTransaction(
         parseFloat(amount),
         categoryId,
+        note,
         date
       );
+      const category = store.categories.find(
+        (cat: CategoryInterface) => cat.categoryId === newTransaction.categoryId
+      ) as CategoryInterface;
       setStore((prevState) => {
         prevState.transactions.push({
+          transactionId: newTransaction.transactionId,
           amount: parseFloat(newTransaction.amount),
-          categoryId: newTransaction.categoryId,
+          category,
+          note: newTransaction.note,
           date: new Date(newTransaction.date),
         });
         return {
@@ -89,6 +95,14 @@ export default function Transaction() {
           label="Number"
           type="number"
         />
+        <TextField
+          value={note}
+          // eslint-disable-next-line
+          onChange={(e) => setNote(e.target.value)}
+          id="outlined-note"
+          label="Note"
+          type="text"
+        />
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
             label="Date"
@@ -102,7 +116,6 @@ export default function Transaction() {
         </LocalizationProvider>
         <LoadingButton
           type="submit"
-          endIcon={<SendIcon />}
           loading={false}
           loadingPosition="end"
           variant="contained"

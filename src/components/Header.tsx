@@ -5,7 +5,8 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Slide } from "@mui/material";
+import { Slide, useTheme } from "@mui/material";
+import { Brightness4, Brightness7 } from "@mui/icons-material";
 import { useAppStore } from "./store";
 import { Handlers } from "../App";
 
@@ -15,6 +16,7 @@ interface HeaderInterface {
 
 export default function Header({ handlers }: HeaderInterface) {
   const { store } = useAppStore();
+  const theme = useTheme();
   return (
     <Slide direction="down" in={store.loggedIn} mountOnEnter unmountOnExit>
       <AppBar position="static">
@@ -31,6 +33,16 @@ export default function Header({ handlers }: HeaderInterface) {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Mo Money Mo Problems
           </Typography>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+            onClick={handlers.handleThemeToggle}
+          >
+            {theme.palette.mode === "light" ? <Brightness4 /> : <Brightness7 />}
+          </IconButton>
           <Button onClick={() => handlers.handleShowLogin()} color="inherit">
             Log out
           </Button>
