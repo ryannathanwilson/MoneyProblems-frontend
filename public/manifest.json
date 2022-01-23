@@ -1,6 +1,8 @@
 {
-  "name":"",
-  "short_name":"",
+  "manifest_version": 2 ,
+  "version": "1.0",
+  "name":"Mo Money Mo Problems",
+  "short_name":"Monies",
   "icons":[
     {
       "src":"/android-chrome-192x192.png",
