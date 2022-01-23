@@ -169,6 +169,10 @@ function App() {
             element={
               <>
                 <Login handlers={handlers} showLogin={showLogin} />
+                <CreateUser
+                  handlers={handlers}
+                  showCreateUser={showCreateUser}
+                />
                 <Transaction />
                 <Overview />
               </>
@@ -177,12 +181,6 @@ function App() {
           <Route path="all-transactions" element={<AllTransactions />} />
           <Route path="categories" element={<Category />} />
           <Route path="budget" element={<Budget />} />
-          <Route
-            path="create-user"
-            element={
-              <CreateUser handlers={handlers} showCreateUser={showCreateUser} />
-            }
-          />
         </Routes>
       </ThemeProvider>
     </Router>
