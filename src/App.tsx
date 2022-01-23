@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import {
   CssBaseline,
   ThemeProvider,
@@ -158,19 +159,33 @@ function App() {
   },[store.loggedIn]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <div className="App">
+    <Router>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
         <Header handlers={handlers} />
-        <Login handlers={handlers} showLogin={showLogin} />
-        <CreateUser handlers={handlers} showCreateUser={showCreateUser} />
-        <Transaction />
-        <AllTransactions />
-        <Overview />
-        <Category />
-        <Budget />
-      </div>
-    </ThemeProvider>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <Login handlers={handlers} showLogin={showLogin} />
+                <Transaction />
+                <Overview />
+              </>
+            }
+          />
+          <Route path="all-transactions" element={<AllTransactions />} />
+          <Route path="categories" element={<Category />} />
+          <Route path="budget" element={<Budget />} />
+          <Route
+            path="create-user"
+            element={
+              <CreateUser handlers={handlers} showCreateUser={showCreateUser} />
+            }
+          />
+        </Routes>
+      </ThemeProvider>
+    </Router>
   );
 }
 
