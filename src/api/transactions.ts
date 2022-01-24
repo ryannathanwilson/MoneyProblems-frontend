@@ -1,16 +1,22 @@
-import { TransactionInterface } from "../components/store";
 import config from "../config";
 
 interface TransactionModel {
   transactionId: string;
   userId: string;
-  categoryId: string;
+  categoryId?: string;
   amount: string;
   note: string;
   date: Date;
   year: string;
   createdAt?: string;
   updatedAt?: string;
+}
+
+interface TransactionResponse extends TransactionModel {
+  category: {
+    categoryId: string;
+    category: string;
+  };
 }
 
 export async function createTransaction(
@@ -40,7 +46,7 @@ export async function createTransaction(
 
 export async function getTransactionsYearToDate(
   year: number
-): Promise<TransactionInterface[]> {
+): Promise<TransactionResponse[]> {
   const allTransactions = await fetch(
     `${config.api.baseurl}/transaction/by-year/${year}`,
     {

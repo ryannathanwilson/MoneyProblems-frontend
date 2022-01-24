@@ -11,7 +11,7 @@ import Login from "./pages/Login";
 import Transaction from "./pages/Transaction";
 import Overview from "./pages/Overview";
 import Category from "./pages/Category";
-import { useAppStore } from "./components/store";
+import { TransactionInterface, useAppStore } from "./components/store";
 import { refreshAccessToken } from "./api/auth";
 import Header from "./components/Header";
 import Budget from "./pages/Budget";
@@ -57,17 +57,18 @@ function App() {
     });
     const transactions = await getTransactionsYearToDate(today.getFullYear());
     // eslint-disable-next-line
-    const storeTransactions = transactions.map((transaction) => {
-      return {
-        transactionId: transaction.transactionId,
-        amount: transaction.amount,
-        category: {
-          categoryId: transaction.category.categoryId,
-          category: transaction.category.category,
-        },
-        date: transaction.date,
-      };
-    });
+    const storeTransactions: TransactionInterface[] = transactions.map((transaction) => {
+        return {
+          transactionId: transaction.transactionId,
+          amount: parseFloat(transaction.amount),
+          category: {
+            categoryId: transaction.category.categoryId,
+            category: transaction.category.category,
+          },
+          date: transaction.date,
+        };
+      }
+    );
 
     setStore((prevStore) => {
       return {

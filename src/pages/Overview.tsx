@@ -6,7 +6,13 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { useAppStore, OverviewInterface } from "../components/store";
+import {
+  useAppStore,
+  OverviewInterface,
+  CategoryInterface,
+  TransactionInterface,
+  BudgetInterface,
+} from "../components/store";
 import FormBox from "../components/FormBox";
 
 export default function Overview() {
@@ -15,47 +21,49 @@ export default function Overview() {
   useEffect(() => {
     const newOverview: OverviewInterface[] = store.categories.map(
       // eslint-disable-next-line
-      (cat: any) => {
+      (cat: CategoryInterface) => {
         const monthExpenses = store.transactions
           // eslint-disable-next-line
-          .filter((exp: any) => {
+          .filter((transaction: TransactionInterface) => {
             return (
-              new Date(exp.date).getMonth() === new Date().getMonth() &&
-              exp.categoryId === cat.categoryId
+              new Date(transaction.date).getMonth() === new Date().getMonth() &&
+              transaction.category.categoryId === cat.categoryId
             );
           })
           .reduce(
             // eslint-disable-next-line
-            (total: number, transaction: any) => total + transaction.amount,
+            (total: number, transaction: TransactionInterface) => total + transaction.amount,
             0
           );
         const ytdExpenses = store.transactions
           // eslint-disable-next-line
-          .filter((transaction: any) => {
-            return transaction.categoryId === cat.categoryId;
+          .filter((transaction: TransactionInterface) => {
+            return transaction.category.categoryId === cat.categoryId;
           })
           .reduce(
             // eslint-disable-next-line
-            (total: number, transaction: any) => total + transaction.amount,
+            (total: number, transaction: TransactionInterface) => total + transaction.amount,
             0
           );
         // eslint-disable-next-line
-        const monthBudgetItem = store.budgets.find((item: any) => {
-          return (
-            item.categoryId === cat.categoryId &&
-            item.month === new Date().getMonth()
-          );
-        }) || { amount: 0 };
+        const monthBudgetItem = store.budgets.find((budget: BudgetInterface) => {
+            return (
+              budget.categoryId === cat.categoryId &&
+              budget.month === new Date().getMonth()
+            );
+          }
+        ) || { amount: 0 };
         // eslint-disable-next-line
-        const ytdBudgetItems = store.budgets.filter((item: any) => {
-          return (
-            item.categoryId === cat.categoryId &&
-            item.month <= new Date().getMonth()
-          );
-        }) || { amount: 0 };
+        const ytdBudgetItems = store.budgets.filter((budget: BudgetInterface) => {
+            return (
+              budget.categoryId === cat.categoryId &&
+              budget.month <= new Date().getMonth()
+            );
+          }
+        ) || { amount: 0 };
         const ytdBudget = ytdBudgetItems.reduce(
           // eslint-disable-next-line
-          (total: number, budget: any) => total + budget.amount,
+          (total: number, budget: BudgetInterface) => total + budget.amount,
           0
         );
         return {

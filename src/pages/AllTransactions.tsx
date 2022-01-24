@@ -10,26 +10,26 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useAppStore } from "../components/store";
 import FormBox from "../components/FormBox";
-// import { deleteTransaction } from "../api/transactions";
+import { deleteTransaction } from "../api/transactions";
 
 export default function AllTransactions() {
-  const { store } = useAppStore();
+  const { store, setStore } = useAppStore();
   // const handleOpenModal = (transaction: any) => {
   // console.log(transaction);
   // };
   // const handleUpdateTransaction = async () => {
   // const updatedTransaction = await
   // }
-  // const handleDeleteTransaction = async (transactionId: string) => {
-  // deleteTransaction(transactionId);
-  // const updatedTransactionList = store.transactions.filter(
-  // (transaction) => transaction.transactionId !== transactionId
-  // );
-  // setStore({
-  // ...store,
-  // transactions: updatedTransactionList,
-  // });
-  // };
+  const handleDeleteTransaction = async (transactionId: string) => {
+    deleteTransaction(transactionId);
+    const updatedTransactionList = store.transactions.filter(
+      (transaction) => transaction.transactionId !== transactionId
+    );
+    setStore({
+      ...store,
+      transactions: updatedTransactionList,
+    });
+  };
 
   return (
     <Slide
@@ -80,9 +80,9 @@ export default function AllTransactions() {
                         </IconButton>
                         <IconButton
                           aria-label="delete"
-                          // onClick={() =>
-                          // handleDeleteTransaction(row.transactionId)
-                          // }
+                          onClick={() =>
+                            handleDeleteTransaction(row.transactionId)
+                          }
                         >
                           <DeleteIcon />
                         </IconButton>
