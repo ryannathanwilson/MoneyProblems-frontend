@@ -50,13 +50,7 @@ export default function Budget() {
   };
 
   return (
-    <Slide
-      direction="up"
-      timeout={300}
-      in={store.loggedIn}
-      mountOnEnter
-      unmountOnExit
-    >
+    <Slide timeout={300} in={store.loggedIn} mountOnEnter unmountOnExit>
       <FormBox
         component="form"
         onSubmit={(e) => {

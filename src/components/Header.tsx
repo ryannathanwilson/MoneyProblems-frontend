@@ -1,15 +1,25 @@
 import React, { useState } from "react";
+import EqualizerIcon from "@mui/icons-material/Equalizer";
+import Paper from "@mui/material/Paper";
+import HomeIcon from "@mui/icons-material/Home";
+import CategoryIcon from "@mui/icons-material/Category";
+import ViewListIcon from "@mui/icons-material/ViewList";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import { Slide, SwipeableDrawer, useTheme } from "@mui/material";
+import {
+  BottomNavigation,
+  BottomNavigationAction,
+  Box,
+  Slide,
+  useTheme,
+} from "@mui/material";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 import { useAppStore } from "./store";
 import { Handlers } from "../App";
-import Menu from "./Menu";
 
 interface HeaderInterface {
   handlers: Handlers;
@@ -17,27 +27,14 @@ interface HeaderInterface {
 
 export default function Header({ handlers }: HeaderInterface) {
   const { store } = useAppStore();
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [value, setValue] = useState(0);
   const theme = useTheme();
-  const toggleDrawer = (open: boolean) => {
-    setDrawerOpen(open);
-  };
 
   return (
     <>
       <Slide direction="down" in={store.loggedIn} mountOnEnter unmountOnExit>
         <AppBar position="static">
           <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-              onClick={() => toggleDrawer(!drawerOpen)}
-            >
-              <MenuIcon />
-            </IconButton>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Mo Money Mo Problems
             </Typography>
@@ -61,14 +58,51 @@ export default function Header({ handlers }: HeaderInterface) {
           </Toolbar>
         </AppBar>
       </Slide>
-      <SwipeableDrawer
-        anchor="left"
-        open={drawerOpen}
-        onClose={() => toggleDrawer(false)}
-        onOpen={() => toggleDrawer(true)}
+      <Box
+        component={Paper}
+        sx={{
+          zIndex: 100,
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          paddingBottom: 4,
+          boxShadow: 8,
+        }}
       >
-        <Menu />
-      </SwipeableDrawer>
+        <BottomNavigation
+          showLabels
+          value={value}
+          onChange={(event, newValue) => {
+            setValue(newValue);
+          }}
+        >
+          <BottomNavigationAction
+            component={Link}
+            to="/"
+            label="Home"
+            icon={<HomeIcon />}
+          />
+          <BottomNavigationAction
+            component={Link}
+            to="all-transactions"
+            label="Transactions"
+            icon={<ViewListIcon />}
+          />
+          <BottomNavigationAction
+            component={Link}
+            to="categories"
+            label="Categories"
+            icon={<CategoryIcon />}
+          />
+          <BottomNavigationAction
+            component={Link}
+            to="budget"
+            label="Budget"
+            icon={<EqualizerIcon />}
+          />
+        </BottomNavigation>
+      </Box>
     </>
   );
 }

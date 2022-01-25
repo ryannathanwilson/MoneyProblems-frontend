@@ -41,6 +41,25 @@ const getDesignTokens = (mode: PaletteMode) => ({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(","),
+    h2: {
+      fontSize: "2rem",
+      fontWeight: "400",
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          padding: "1rem",
+          fontSize: "1rem",
+        },
+      },
+    },
+    MuiSlide: {
+      defaultProps: {
+        direction: "left",
+      },
+    },
   },
 });
 
