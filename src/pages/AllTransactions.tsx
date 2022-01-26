@@ -1,16 +1,18 @@
 import React from "react";
-import { Typography, Slide, Paper, IconButton } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import {
+  Typography,
+  Slide,
+  IconButton,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 import { useAppStore } from "../components/store";
-import FormBox from "../components/FormBox";
 import { deleteTransaction } from "../api/transactions";
+import FormBox from "../components/FormBox";
 
 export default function AllTransactions() {
   const { store, setStore } = useAppStore();
@@ -39,61 +41,83 @@ export default function AllTransactions() {
       mountOnEnter
       unmountOnExit
     >
-      <FormBox component="form">
-        <Typography variant="h2" component="div" gutterBottom>
-          Transactions
-        </Typography>
-        <TableContainer component={Paper} elevation={4}>
-          <Table aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Date</TableCell>
-                <TableCell align="left">Category</TableCell>
-                <TableCell align="left">Amount</TableCell>
-                <TableCell align="left"> </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {store.transactions &&
-                store.transactions.map((row) => {
-                  const date = new Date(row.date).toLocaleString("en-US", {
-                    dateStyle: "medium",
-                  });
-                  return (
-                    <TableRow
-                      key={row.transactionId}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {date}
-                      </TableCell>
-                      <TableCell align="left">
-                        {row.category.category}
-                      </TableCell>
-                      <TableCell align="left">{row.amount}</TableCell>
-                      <TableCell align="left">
-                        <IconButton
-                          aria-label="edit"
-                          // onClick={() => handleOpenModal(row)}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() =>
-                            handleDeleteTransaction(row.transactionId)
-                          }
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+      <FormBox>
+        {store.transactions.map((row) => {
+          const date = new Date(row.date).toLocaleString("en-US", {
+            dateStyle: "medium",
+          });
+          return (
+            <Accordion key={row.transactionId}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography>{date}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography>
+                  <IconButton
+                    aria-label="edit"
+                    /// / onClick={() => handleOpenModal(row)}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="delete"
+                    onClick={() => handleDeleteTransaction(row.transactionId)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
+                  eget.
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
+          );
+        })}
       </FormBox>
     </Slide>
   );
 }
+// const TransactionAccordion: Function = (
+// transactions: TransactionInterface[],
+// ): JSX.Element[] {
+// return (
+// <>
+// {store.transactions.map((row) => {
+// return (
+// <Accordion key={row.transactions}>
+// <AccordionSummary
+// expandIcon={<ExpandMoreIcon />}
+// aria-controls="panel1a-content"
+// id="panel1a-header"
+// >
+// <Typography>Accordion 1</Typography>
+// </AccordionSummary>
+// <AccordionDetails>
+// <Typography>
+// <IconButton
+// aria-label="edit"
+/// / onClick={() => handleOpenModal(row)}
+// >
+// <EditIcon />
+// </IconButton>
+// <IconButton
+// aria-label="delete"
+// onClick={() => handleDeleteTransaction(row.transactionId)}
+// >
+// <DeleteIcon />
+// </IconButton>
+// Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+// Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
+// eget.
+// </Typography>
+// </AccordionDetails>
+// </Accordion>
+// );
+// })}
+// </>
+// );
+// }
