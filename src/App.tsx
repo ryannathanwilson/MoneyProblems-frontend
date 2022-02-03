@@ -60,6 +60,7 @@ function App() {
         return {
           transactionId: transaction.transactionId,
           amount: parseFloat(transaction.amount),
+          note: transaction.note,
           category: {
             categoryId: transaction.category.categoryId,
             category: transaction.category.category,

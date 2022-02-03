@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { TextField } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
+import Button from "@mui/material/Button";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
@@ -8,13 +10,14 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { useAppStore, CategoryInterface, TransactionInterface } from "./store";
-import FormBox from "./FormBox";
 import {
+  deleteTransaction,
   createTransaction,
   updateTransaction,
   TransactionModel,
 } from "../api/transactions";
+import { useAppStore, CategoryInterface, TransactionInterface } from "./store";
+import FormBox from "./FormBox";
 
 const defaultTransaction: TransactionInterface = {
   date: new Date(),
@@ -46,6 +49,16 @@ export default function TransactionForm({
     transaction.category.categoryId
   );
   const [date, setDate] = useState<Date | null>(transaction.date);
+  const handleDeleteTransaction = async (transactionIdToDelete: string) => {
+    deleteTransaction(transactionIdToDelete);
+    const updatedTransactionList = store.transactions.filter(
+      (t) => t.transactionId !== transactionIdToDelete
+    );
+    setStore({
+      ...store,
+      transactions: updatedTransactionList,
+    });
+  };
   const handleTransaction = async (create: boolean) => {
     if (date !== null) {
       let newTransaction = {} as TransactionModel;
@@ -90,10 +103,12 @@ export default function TransactionForm({
           transactions: transactionsArray,
         };
       });
-      setAmount("");
-      setCategoryId("");
-      setDate(new Date());
-      setNote("");
+      setAmount(
+        newTransaction?.amount ? newTransaction?.amount.toString() : ""
+      );
+      setCategoryId(newTransaction.categoryId || "");
+      setDate(newTransaction.date);
+      setNote(newTransaction.note || "");
     }
   };
 
@@ -132,7 +147,7 @@ export default function TransactionForm({
           onChange={(e) => setAmount(e.target.value)}
         id="outlined-number"
         label="Number"
-        type="number"
+        type="text"
       />
       <TextField
         value={note}
@@ -153,14 +168,25 @@ export default function TransactionForm({
             renderInput={(params) => <TextField {...params} />}
         />
       </LocalizationProvider>
-      <LoadingButton
-        type="submit"
-        loading={false}
-        loadingPosition="end"
-        variant="contained"
-      >
-        {createNewTransaction ? "Submit transaction" : "Update transaction"}
-      </LoadingButton>
+      {createNewTransaction ? (
+        <Button type="submit" variant="contained">
+          Submit transaction
+        </Button>
+      ) : (
+        <Button startIcon={<EditIcon />} type="submit" variant="contained">
+          Update transaction
+        </Button>
+      )}
+      {!createNewTransaction && (
+        <Button
+          startIcon={<DeleteIcon />}
+          sx={{ backgroundColor: "danger.main" }}
+          variant="contained"
+          onClick={() => handleDeleteTransaction(transactionId)}
+        >
+          Delete transaction
+        </Button>
+      )}
     </FormBox>
   );
 }

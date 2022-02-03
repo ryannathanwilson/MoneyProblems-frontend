@@ -5,7 +5,7 @@ import TransactionForm from "../components/TransactionForm";
 import Overview from "../components/Overview";
 import Container from "../components/Container";
 
-export default function TransactionPage() {
+export default function TransactionPage(): JSX.Element {
   const { store } = useAppStore();
 
   return (
