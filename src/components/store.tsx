@@ -13,7 +13,7 @@ export interface BudgetInterface {
 }
 export interface TransactionInterface {
   transactionId: string;
-  amount: number;
+  amount?: number;
   category: { categoryId: string; category: string };
   note?: string;
   date: Date;

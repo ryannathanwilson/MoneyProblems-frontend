@@ -8,8 +8,7 @@ import {
 } from "@mui/material";
 import CreateUser from "./pages/CreateUser";
 import Login from "./pages/Login";
-import Transaction from "./pages/Transaction";
-import Overview from "./pages/Overview";
+import TransactionPage from "./pages/TransactionPage";
 import Category from "./pages/Category";
 import { TransactionInterface, useAppStore } from "./components/store";
 import { refreshAccessToken } from "./api/auth";
@@ -174,8 +173,7 @@ function App() {
                   handlers={handlers}
                   showCreateUser={showCreateUser}
                 />
-                <Transaction />
-                <Overview />
+                <TransactionPage />
               </>
             }
           />

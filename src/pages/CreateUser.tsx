@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import { createUser } from "../api/users";
 import { loginUser } from "../api/auth";
 import { Handlers } from "../App";
-import FormBox from "../components/FormBox";
+import Container from "../components/Container";
 
 interface CreateUserInterface {
   handlers: Handlers;
@@ -74,7 +74,7 @@ export default function CreateUser({
 
   return (
     <Slide direction="down" in={showCreateUser} mountOnEnter unmountOnExit>
-      <FormBox
+      <Container
         component="form"
         onSubmit={(e) => {
           e.preventDefault();
@@ -129,7 +129,7 @@ export default function CreateUser({
         >
           Return to login
         </Button>
-      </FormBox>
+      </Container>
     </Slide>
   );
 }

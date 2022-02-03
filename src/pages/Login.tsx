@@ -3,7 +3,7 @@ import { Typography, Slide, TextField } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
 import { Handlers } from "../App";
-import FormBox from "../components/FormBox";
+import Container from "../components/Container";
 import { loginUser } from "../api/auth";
 
 interface LoginInterface {
@@ -46,7 +46,7 @@ export default function Login({ handlers, showLogin }: LoginInterface) {
 
   return (
     <Slide direction="right" in={showLogin} mountOnEnter unmountOnExit>
-      <FormBox
+      <Container
         component="form"
         onSubmit={(e) => {
           e.preventDefault();
@@ -87,7 +87,7 @@ export default function Login({ handlers, showLogin }: LoginInterface) {
         >
           Go to sign up
         </Button>
-      </FormBox>
+      </Container>
     </Slide>
   );
 }

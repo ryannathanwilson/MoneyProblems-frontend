@@ -10,7 +10,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { createBudget } from "../api/budget";
 import { useAppStore } from "../components/store";
-import FormBox from "../components/FormBox";
+import Container from "../components/Container";
 
 export default function Budget() {
   const { store, setStore } = useAppStore();
@@ -50,8 +50,14 @@ export default function Budget() {
   };
 
   return (
-    <Slide timeout={300} in={store.loggedIn} mountOnEnter unmountOnExit>
-      <FormBox
+    <Slide
+      direction="up"
+      timeout={300}
+      in={store.loggedIn}
+      mountOnEnter
+      unmountOnExit
+    >
+      <Container
         component="form"
         onSubmit={(e) => {
           e.preventDefault();
@@ -114,7 +120,7 @@ export default function Budget() {
         >
           Create new budget item
         </LoadingButton>
-      </FormBox>
+      </Container>
     </Slide>
   );
 }

@@ -1,20 +1,52 @@
-import React from "react";
+import React, { useState } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
-  Typography,
   Slide,
   IconButton,
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  styled,
+  Collapse,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { TransitionGroup } from "react-transition-group";
 import { useAppStore } from "../components/store";
 import { deleteTransaction } from "../api/transactions";
-import FormBox from "../components/FormBox";
+import Container from "../components/Container";
+import TransactionForm from "../components/TransactionForm";
 
 export default function AllTransactions() {
+  const [edit, setEdit] = useState<boolean>(false);
+  const openEdit = () => {
+    setEdit((prev) => !prev);
+  };
+  const Grid = styled("div")({
+    display: "grid",
+    gridTemplateRows: "1fr 1fr",
+    gridTemplateColumns: "100px 1fr",
+    textAlign: "left",
+  });
+  const AmountBox = styled("div")({
+    flexGrow: 0,
+    fontWeight: "bold",
+    fontSize: "1.5em",
+  });
+  const CategoryBox = styled("div")({
+    flexGrow: 1,
+    fontWeight: "bold",
+    fontSize: "1.5em",
+  });
+  const DateBox = styled("div")({
+    flexGrow: 0,
+  });
+  const NoteBox = styled("div")({});
+  const IconBox = styled("div")({
+    display: "flex",
+    justifyContent: "space-around",
+  });
+  const EditStuff = styled("div")({});
   const { store, setStore } = useAppStore();
   // const handleOpenModal = (transaction: any) => {
   // console.log(transaction);
@@ -41,27 +73,52 @@ export default function AllTransactions() {
       mountOnEnter
       unmountOnExit
     >
-      <FormBox>
+      <Container sx={{ gridGap: 0 }}>
         {store.transactions.map((row) => {
-          const date = new Date(row.date).toLocaleString("en-US", {
-            dateStyle: "medium",
+          const day = new Date(row.date).toLocaleString("en-US", {
+            day: "numeric",
           });
+          const month = new Date(row.date).toLocaleString("en-US", {
+            month: "short",
+          });
+          const date = `${month} ${day}`;
           return (
             <Accordion key={row.transactionId}>
               <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
+                expandIcon={
+                  // <>
+                  // <EditIcon />
+                  // <DeleteIcon />
+                  // </>
+                  <ExpandMoreIcon />
+                }
                 aria-controls="panel1a-content"
                 id="panel1a-header"
               >
-                <Typography>{date}</Typography>
+                <Grid>
+                  <AmountBox>${row.amount}</AmountBox>
+                  <CategoryBox>{row.category.category}</CategoryBox>
+                  <DateBox>{date}</DateBox>
+                  <NoteBox>{row.note}</NoteBox>
+                </Grid>
               </AccordionSummary>
               <AccordionDetails>
-                <Typography>
+                <TransitionGroup>
+                  {edit && (
+                    <Collapse>
+                      <TransactionForm
+                        transaction={row}
+                        createNewTransaction={false}
+                      />
+                    </Collapse>
+                  )}
+                </TransitionGroup>
+                <IconBox>
                   <IconButton
                     aria-label="edit"
                     /// / onClick={() => handleOpenModal(row)}
                   >
-                    <EditIcon />
+                    <EditIcon aria-label="edit" onClick={openEdit} />
                   </IconButton>
                   <IconButton
                     aria-label="delete"
@@ -69,15 +126,12 @@ export default function AllTransactions() {
                   >
                     <DeleteIcon />
                   </IconButton>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </Typography>
+                </IconBox>
               </AccordionDetails>
             </Accordion>
           );
         })}
-      </FormBox>
+      </Container>
     </Slide>
   );
 }

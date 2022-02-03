@@ -1,6 +1,6 @@
 import config from "../config";
 
-interface TransactionModel {
+export interface TransactionModel {
   transactionId: string;
   userId: string;
   categoryId?: string;
@@ -84,17 +84,27 @@ export async function deleteTransaction(
 }
 
 export async function updateTransaction(
-  transaction: TransactionModel
+  transactionId: string,
+  amount: number,
+  categoryId: string,
+  note: string,
+  date: Date
 ): Promise<TransactionModel> {
   const updatedTransaction = await fetch(
-    `${config.api.baseurl}/transaction/update/${transaction.transactionId}`,
+    `${config.api.baseurl}/transaction/update/${transactionId}`,
     {
       method: "PATCH",
       headers: {
         authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         "content-type": "application/json",
       },
-      body: JSON.stringify(transaction),
+      body: JSON.stringify({
+        transactionId,
+        amount,
+        categoryId,
+        note,
+        date,
+      }),
     }
   ).then((response) => response.json());
   return updatedTransaction;

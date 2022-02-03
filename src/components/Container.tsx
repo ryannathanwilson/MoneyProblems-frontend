@@ -1,11 +1,11 @@
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 
-const FormBox = styled(Box)`
+const Container = styled(Box)`
   box-sizing: border-box;
   text-align: center;
-  width: 100%;
-  margin: auto;
+  width: 25rem;
+  margin: 3rem auto 6rem;
   display: flex;
   flex-direction: column;
   grid-gap: 1rem;
@@ -15,4 +15,4 @@ const FormBox = styled(Box)`
   }
 `;
 
-export default FormBox;
+export default Container;

@@ -15,7 +15,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useAppStore } from "../components/store";
-import FormBox from "../components/FormBox";
+import Container from "../components/Container";
 import {
   createCategory,
   deleteCategory,
@@ -89,7 +89,7 @@ export default function Category() {
       mountOnEnter
       unmountOnExit
     >
-      <FormBox
+      <Container
         onSubmit={(e) => {
           e.preventDefault();
           handleCreateCategory();
@@ -165,7 +165,7 @@ export default function Category() {
         >
           Create new category
         </LoadingButton>
-      </FormBox>
+      </Container>
     </Slide>
   );
 }

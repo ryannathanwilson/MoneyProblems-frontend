@@ -12,8 +12,8 @@ import {
   CategoryInterface,
   TransactionInterface,
   BudgetInterface,
-} from "../components/store";
-import FormBox from "../components/FormBox";
+} from "./store";
+import Container from "./Container";
 
 export default function Overview() {
   const { store } = useAppStore();
@@ -88,7 +88,7 @@ export default function Overview() {
       mountOnEnter
       unmountOnExit
     >
-      <FormBox component="form">
+      <Container component="form">
         <Typography variant="h2" component="div" gutterBottom>
           Overview
         </Typography>
@@ -122,7 +122,7 @@ export default function Overview() {
             </TableBody>
           </Table>
         </TableContainer>
-      </FormBox>
+      </Container>
     </Slide>
   );
 }
