@@ -32,7 +32,7 @@ export default function Overview() {
           })
           .reduce(
             // eslint-disable-next-line
-            (total: number, transaction: TransactionInterface) => total + transaction.amount,
+            (total: number, transaction: TransactionInterface) => total + (transaction?.amount ? transaction.amount : 0),
             0
           );
         const ytdExpenses = store.transactions
@@ -42,7 +42,7 @@ export default function Overview() {
           })
           .reduce(
             // eslint-disable-next-line
-            (total: number, transaction: TransactionInterface) => total + transaction.amount,
+            (total: number, transaction: TransactionInterface) => total + (transaction?.amount ? transaction.amount : 0),
             0
           );
         // eslint-disable-next-line

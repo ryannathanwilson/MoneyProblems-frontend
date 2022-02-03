@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, TextField, Slide } from "@mui/material";
+import { Typography, Slide } from "@mui/material";
 import { useAppStore } from "../components/store";
 import TransactionForm from "../components/TransactionForm";
 import Overview from "../components/Overview";

@@ -46,7 +46,6 @@ export default function AllTransactions() {
     display: "flex",
     justifyContent: "space-around",
   });
-  const EditStuff = styled("div")({});
   const { store, setStore } = useAppStore();
   // const handleOpenModal = (transaction: any) => {
   // console.log(transaction);
