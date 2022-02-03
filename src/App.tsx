@@ -31,7 +31,9 @@ function App() {
   const { store, setStore } = useAppStore();
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const [showCreateUser, setShowCreateUser] = useState<boolean>(false);
-  const [mode, setMode] = useState<PaletteMode>("light");
+  const [mode, setMode] = useState<PaletteMode>(
+    (localStorage.getItem("mode") as PaletteMode) || "light"
+  );
   const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
   const populateStore = async () => {
@@ -99,7 +101,8 @@ function App() {
     );
   };
   const handleShowLogin = () => {
-    localStorage.clear();
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("accessToken");
     setStore((prevStore) => {
       return { ...prevStore, loggedIn: false };
     });
@@ -115,7 +118,11 @@ function App() {
   };
 
   const handleThemeToggle = () => {
-    setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+    setMode((prevMode) => {
+      const toggledMode = prevMode === "light" ? "dark" : "light";
+      localStorage.setItem("mode", toggledMode);
+      return toggledMode;
+    });
   };
 
   const handlers: Handlers = {
