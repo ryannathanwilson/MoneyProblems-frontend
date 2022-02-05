@@ -103,12 +103,19 @@ export default function TransactionForm({
           transactions: transactionsArray,
         };
       });
-      setAmount(
-        newTransaction?.amount ? newTransaction?.amount.toString() : ""
-      );
-      setCategoryId(newTransaction.categoryId || "");
-      setDate(newTransaction.date);
-      setNote(newTransaction.note || "");
+      if (createNewTransaction) {
+        setAmount("");
+        setCategoryId("");
+        setDate(new Date());
+        setNote("");
+      } else {
+        setAmount(
+          newTransaction?.amount ? newTransaction?.amount.toString() : ""
+        );
+        setCategoryId(newTransaction.categoryId || "");
+        setDate(newTransaction.date);
+        setNote(newTransaction.note || "");
+      }
     }
   };
 
