@@ -5,7 +5,7 @@ export interface CategoryInterface {
   categoryId: string;
 }
 export interface BudgetInterface {
-  amount: number;
+  amount: string;
   budgetId: string;
   categoryId: string;
   month: number;
@@ -13,17 +13,17 @@ export interface BudgetInterface {
 }
 export interface TransactionInterface {
   transactionId: string;
-  amount?: number;
-  category: { categoryId: string; category: string };
+  amount: string;
+  categoryId: string;
   note?: string;
   date: Date;
 }
 export interface OverviewInterface {
   category: string;
-  monthBudget: number;
-  ytdBudget?: number;
-  monthExpenses: number;
-  ytdExpenses?: number;
+  monthBudget: string;
+  ytdBudget?: string;
+  monthExpenses: string;
+  ytdExpenses?: string;
 }
 interface GlobalState {
   username?: string;

@@ -1,9 +1,10 @@
+import { TransactionInterface } from "../components/store";
 import config from "../config";
 
 export interface TransactionModel {
   transactionId: string;
   userId: string;
-  categoryId?: string;
+  categoryId: string;
   amount: string;
   note: string;
   date: Date;
@@ -12,21 +13,11 @@ export interface TransactionModel {
   updatedAt?: string;
 }
 
-interface TransactionResponse extends TransactionModel {
-  category: {
-    categoryId: string;
-    category: string;
-  };
-}
-
 export async function createTransaction(
-  amount: number,
-  categoryId: string,
-  note: string,
-  date: Date
+  transaction: TransactionInterface
   // eslint-disable-next-line
 ): Promise<TransactionModel> {
-  const year = date.getFullYear();
+  const year = transaction.date.getFullYear();
   const transactionCreated = await fetch(`${config.api.baseurl}/transaction`, {
     method: "POST",
     headers: {
@@ -34,10 +25,10 @@ export async function createTransaction(
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      amount,
-      categoryId,
-      note,
-      date,
+      amount: transaction.amount,
+      categoryId: transaction.categoryId,
+      note: transaction.note,
+      date: transaction.date,
       year,
     }),
   }).then((response) => response.json());
@@ -46,7 +37,7 @@ export async function createTransaction(
 
 export async function getTransactionsYearToDate(
   year: number
-): Promise<TransactionResponse[]> {
+): Promise<TransactionModel[]> {
   const allTransactions = await fetch(
     `${config.api.baseurl}/transaction/by-year/${year}`,
     {
@@ -84,14 +75,11 @@ export async function deleteTransaction(
 }
 
 export async function updateTransaction(
-  transactionId: string,
-  amount: number,
-  categoryId: string,
-  note: string,
-  date: Date
+  transaction: TransactionInterface
 ): Promise<TransactionModel> {
+  const year = new Date(transaction.date).getFullYear();
   const updatedTransaction = await fetch(
-    `${config.api.baseurl}/transaction/update/${transactionId}`,
+    `${config.api.baseurl}/transaction/update/${transaction.transactionId}`,
     {
       method: "PATCH",
       headers: {
@@ -99,11 +87,12 @@ export async function updateTransaction(
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        transactionId,
-        amount,
-        categoryId,
-        note,
-        date,
+        transactionId: transaction.transactionId,
+        amount: transaction.amount,
+        categoryId: transaction.categoryId,
+        note: transaction.note,
+        date: transaction.date,
+        year,
       }),
     }
   ).then((response) => response.json());

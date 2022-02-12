@@ -10,15 +10,12 @@ import CreateUser from "./pages/CreateUser";
 import Login from "./pages/Login";
 import TransactionPage from "./pages/TransactionPage";
 import Category from "./pages/Category";
-import { TransactionInterface, useAppStore } from "./components/store";
+import { useAppStore } from "./components/store";
 import { refreshAccessToken } from "./api/auth";
 import Header from "./components/Header";
 import Budget from "./pages/Budget";
-import { getCategories } from "./api/categories";
-import { getBudgetYearToDate } from "./api/budget";
-import { getTransactionsYearToDate } from "./api/transactions";
 import AllTransactions from "./pages/AllTransactions";
-import getDesignTokens from "./theme";
+import getDesignTokens from "./utilities/theme";
 
 export interface Handlers {
   handleLogin: () => void;
@@ -35,59 +32,6 @@ function App() {
     (localStorage.getItem("mode") as PaletteMode) || "light"
   );
   const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
-
-  const populateStore = async () => {
-    const categories = await getCategories();
-    // eslint-disable-next-line
-    const storeCategories = categories.map((cat: any) => {
-      return {
-        category: cat.category,
-        categoryId: cat.categoryId,
-      };
-    });
-    const today = new Date();
-    const thisMonthBudget = await getBudgetYearToDate(today.getFullYear());
-    // eslint-disable-next-line
-    const storeBudget = thisMonthBudget.map((budget: any) => {
-      return {
-        amount: parseInt(budget.amount, 10),
-        budgetId: budget.budgetId,
-        categoryId: budget.categoryId,
-        month: budget.month,
-      };
-    });
-    const transactions = await getTransactionsYearToDate(today.getFullYear());
-    // eslint-disable-next-line
-    const storeTransactions: TransactionInterface[] = transactions.map((transaction) => {
-        return {
-          transactionId: transaction.transactionId,
-          amount: parseFloat(transaction.amount),
-          note: transaction.note,
-          category: {
-            categoryId: transaction.category.categoryId,
-            category: transaction.category.category,
-          },
-          date: transaction.date,
-        };
-      }
-    );
-
-    setStore((prevStore) => {
-      return {
-        ...prevStore,
-        categories: storeCategories,
-        budgets: storeBudget,
-        transactions: storeTransactions,
-      };
-    });
-  };
-
-  useEffect(() => {
-    if (store.loggedIn) {
-      populateStore();
-    }
-    // eslint-disable-next-line
-    },[store.loggedIn])
 
   const handleLogin = () => {
     setShowLogin(false);

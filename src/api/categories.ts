@@ -1,3 +1,4 @@
+import { CategoryInterface } from "../components/store";
 import config from "../config";
 
 interface CategoryModel {
@@ -49,11 +50,10 @@ export async function deleteCategory(
 }
 
 export async function updateCategory(
-  categoryId: string,
-  category: string
+  category: CategoryInterface
 ): Promise<CategoryModel> {
   const updatedCategory = await fetch(
-    `${config.api.baseurl}/category/update/${categoryId}`,
+    `${config.api.baseurl}/category/update/${category.categoryId}`,
     {
       method: "PATCH",
       headers: {
@@ -61,7 +61,7 @@ export async function updateCategory(
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        category,
+        category: category.category,
       }),
     }
   ).then((response) => response.json());

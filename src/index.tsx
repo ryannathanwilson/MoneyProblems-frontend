@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import { QueryClient, QueryClientProvider } from "react-query";
 import App from "./App";
 import { AppContextProvider } from "./components/store";
 
@@ -10,11 +10,24 @@ import { AppContextProvider } from "./components/store";
 // - Transaction for current month only
 // - Toggle current month
 // - Budget page makeover
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 0,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
+    },
+  },
+});
 
 ReactDOM.render(
   <React.StrictMode>
     <AppContextProvider>
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </AppContextProvider>
   </React.StrictMode>,
   document.getElementById("root")

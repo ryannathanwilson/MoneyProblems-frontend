@@ -11,8 +11,15 @@ import { TransitionGroup } from "react-transition-group";
 import { useAppStore } from "../components/store";
 import Container from "../components/Container";
 import TransactionForm from "../components/TransactionForm";
+import { useCategories, useTransactionsByYear } from "../api/queries";
+import mapCategory from "../utilities/utilities";
 
 export default function AllTransactions() {
+  const { data: transactions } = useTransactionsByYear(
+    new Date().getFullYear()
+  );
+  const { data: categories } = useCategories();
+
   const Grid = styled("div")({
     display: "grid",
     gridTemplateRows: "1fr 1fr",
@@ -44,39 +51,43 @@ export default function AllTransactions() {
       unmountOnExit
     >
       <Container sx={{ gridGap: 0 }}>
-        {store.transactions.map((row) => {
-          const day = new Date(row.date).toLocaleString("en-US", {
-            day: "numeric",
-          });
-          const month = new Date(row.date).toLocaleString("en-US", {
-            month: "short",
-          });
-          const date = `${month} ${day}`;
-          return (
-            <Accordion key={row.transactionId}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
-                <Grid>
-                  <AmountBox>${row.amount}</AmountBox>
-                  <CategoryBox>{row.category.category}</CategoryBox>
-                  <DateBox>{date}</DateBox>
-                  <NoteBox>{row.note}</NoteBox>
-                </Grid>
-              </AccordionSummary>
-              <AccordionDetails>
-                <TransitionGroup>
-                  <TransactionForm
-                    transaction={row}
-                    createNewTransaction={false}
-                  />
-                </TransitionGroup>
-              </AccordionDetails>
-            </Accordion>
-          );
-        })}
+        {transactions &&
+          categories &&
+          transactions.map((row) => {
+            const day = new Date(row.date).toLocaleString("en-US", {
+              day: "numeric",
+            });
+            const month = new Date(row.date).toLocaleString("en-US", {
+              month: "short",
+            });
+            const date = `${month} ${day}`;
+            return (
+              <Accordion key={row.transactionId}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Grid>
+                    <AmountBox>${row.amount}</AmountBox>
+                    <CategoryBox>
+                      {mapCategory(row.categoryId, categories)}
+                    </CategoryBox>
+                    <DateBox>{date}</DateBox>
+                    <NoteBox>{row.note}</NoteBox>
+                  </Grid>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <TransitionGroup>
+                    <TransactionForm
+                      transactionProps={row}
+                      createNewTransaction={false}
+                    />
+                  </TransitionGroup>
+                </AccordionDetails>
+              </Accordion>
+            );
+          })}
       </Container>
     </Slide>
   );

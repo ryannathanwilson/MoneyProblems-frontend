@@ -18,103 +18,60 @@ import {
 } from "../api/transactions";
 import { useAppStore, CategoryInterface, TransactionInterface } from "./store";
 import FormBox from "./FormBox";
+import { useCategories, useTransactionsByYear } from "../api/queries";
 
 const defaultTransaction: TransactionInterface = {
   date: new Date(),
   transactionId: "",
+  amount: "",
   note: "",
-  category: {
-    category: "",
-    categoryId: "",
-  },
+  categoryId: "",
 };
 interface TransactionProps {
   // eslint-disable-next-line
-  transaction?: TransactionInterface;
+  transactionProps?: TransactionInterface;
   // eslint-disable-next-line
   createNewTransaction?: boolean;
 }
 
 export default function TransactionForm({
-  transaction = defaultTransaction,
+  transactionProps = defaultTransaction,
   createNewTransaction = true,
 }: TransactionProps) {
-  const { store, setStore } = useAppStore();
-  const [transactionId] = useState<string>(transaction?.transactionId);
-  const [amount, setAmount] = useState<string>(
-    transaction?.amount ? transaction?.amount.toString() : ""
+  const { data: categories } = useCategories();
+  const { refetch: refreshTransactions } = useTransactionsByYear(
+    new Date().getFullYear()
   );
-  const [note, setNote] = useState<string>(transaction?.note || "");
-  const [categoryId, setCategoryId] = useState<string>(
-    transaction.category.categoryId
+  const [transaction, setTransaction] = useState<TransactionInterface>(
+    transactionProps as TransactionInterface
   );
-  const [date, setDate] = useState<Date | null>(transaction.date);
   const handleDeleteTransaction = async (transactionIdToDelete: string) => {
     deleteTransaction(transactionIdToDelete);
-    const updatedTransactionList = store.transactions.filter(
-      (t) => t.transactionId !== transactionIdToDelete
-    );
-    setStore({
-      ...store,
-      transactions: updatedTransactionList,
-    });
   };
   const handleTransaction = async (create: boolean) => {
-    if (date !== null) {
+    if (categories) {
       let newTransaction = {} as TransactionModel;
       if (create) {
-        newTransaction = await createTransaction(
-          parseFloat(amount),
-          categoryId,
-          note,
-          date
-        );
+        newTransaction = await createTransaction(transaction);
+        refreshTransactions();
+        setTransaction(defaultTransaction);
       } else {
-        newTransaction = await updateTransaction(
-          transactionId,
-          parseFloat(amount),
-          categoryId,
-          note,
-          date
+        newTransaction = await updateTransaction(transaction);
+        refreshTransactions();
+        const category = categories.find(
+          (c) => c.categoryId === newTransaction.categoryId
         );
-      }
-      const category = store.categories.find(
-        (cat: CategoryInterface) => cat.categoryId === newTransaction.categoryId
-      ) as CategoryInterface;
-      setStore((prevState) => {
-        const transactionToStore = {
-          transactionId: newTransaction.transactionId,
-          amount: parseFloat(newTransaction.amount),
-          category,
-          note: newTransaction.note,
-          date: new Date(newTransaction.date),
-        };
-        const transactionsArray = prevState.transactions;
-        if (create) {
-          transactionsArray.push(transactionToStore);
-        } else {
-          const index = transactionsArray.findIndex(
-            (t) => t.transactionId === newTransaction.transactionId
-          );
-          transactionsArray[index] = transactionToStore;
+        if (category) {
+          const updatedTransaction: TransactionInterface = {
+            date: newTransaction.date,
+            amount: newTransaction.amount,
+            transactionId: newTransaction.transactionId,
+            note: newTransaction.note,
+            categoryId: newTransaction.categoryId,
+          };
+
+          setTransaction(updatedTransaction);
         }
-        return {
-          ...prevState,
-          transactions: transactionsArray,
-        };
-      });
-      if (createNewTransaction) {
-        setAmount("");
-        setCategoryId("");
-        setDate(new Date());
-        setNote("");
-      } else {
-        setAmount(
-          newTransaction?.amount ? newTransaction?.amount.toString() : ""
-        );
-        setCategoryId(newTransaction.categoryId || "");
-        setDate(newTransaction.date);
-        setNote(newTransaction.note || "");
       }
     }
   };
@@ -132,34 +89,40 @@ export default function TransactionForm({
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={categoryId}
+          value={transaction.categoryId}
           label="Category"
-          onChange={(e) => setCategoryId(e.target.value)}
+          onChange={(e) =>
+            setTransaction({
+              ...transaction,
+              categoryId: e.target.value,
+            })
+          }
           sx={{
             textAlign: "left",
           }}
         >
-          {store.categories.map((cat) => {
-            return (
-              <MenuItem key={cat.categoryId} value={cat.categoryId}>
-                {cat.category}
-              </MenuItem>
-            );
-          })}
+          {categories &&
+            categories.map((c) => {
+              return (
+                <MenuItem key={c.categoryId} value={c.categoryId}>
+                  {c.category}
+                </MenuItem>
+              );
+            })}
         </Select>
       </FormControl>
       <TextField
-        value={amount}
+        value={transaction.amount}
         // eslint-disable-next-line
-          onChange={(e) => setAmount(e.target.value)}
+          onChange={(e) => setTransaction({...transaction, amount: e.target.value})}
         id="outlined-number"
         label="Number"
         type="text"
       />
       <TextField
-        value={note}
+        value={transaction.note}
         // eslint-disable-next-line
-          onChange={(e) => setNote(e.target.value)}
+          onChange={(e) => setTransaction({...transaction, note: e.target.value})}
         id="outlined-note"
         label="Note"
         type="text"
@@ -167,9 +130,9 @@ export default function TransactionForm({
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
           label="Date"
-          value={date}
+          value={transaction.date}
           onChange={(e) => {
-            setDate(e);
+            setTransaction({ ...transaction, date: e as Date });
           }}
           // eslint-disable-next-line
             renderInput={(params) => <TextField {...params} />}
@@ -189,7 +152,7 @@ export default function TransactionForm({
           startIcon={<DeleteIcon />}
           sx={{ backgroundColor: "danger.main" }}
           variant="contained"
-          onClick={() => handleDeleteTransaction(transactionId)}
+          onClick={() => handleDeleteTransaction(transaction.transactionId)}
         >
           Delete transaction
         </Button>

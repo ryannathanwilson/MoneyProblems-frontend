@@ -14,71 +14,75 @@ import {
   BudgetInterface,
 } from "./store";
 import Container from "./Container";
+import {
+  useCategories,
+  useTransactionsByYear,
+  useBudget,
+} from "../api/queries";
 
 export default function Overview() {
   const { store } = useAppStore();
   const [overview, setOverview] = useState<OverviewInterface[] | undefined>();
-  useEffect(() => {
-    const newOverview: OverviewInterface[] = store.categories.map(
-      // eslint-disable-next-line
-      (cat: CategoryInterface) => {
-        const monthExpenses = store.transactions
-          // eslint-disable-next-line
-          .filter((transaction: TransactionInterface) => {
-            return (
-              new Date(transaction.date).getMonth() === new Date().getMonth() &&
-              transaction.category.categoryId === cat.categoryId
-            );
-          })
-          .reduce(
-            // eslint-disable-next-line
-            (total: number, transaction: TransactionInterface) => total + (transaction?.amount ? transaction.amount : 0),
-            0
-          );
-        const ytdExpenses = store.transactions
-          // eslint-disable-next-line
-          .filter((transaction: TransactionInterface) => {
-            return transaction.category.categoryId === cat.categoryId;
-          })
-          .reduce(
-            // eslint-disable-next-line
-            (total: number, transaction: TransactionInterface) => total + (transaction?.amount ? transaction.amount : 0),
-            0
-          );
-        // eslint-disable-next-line
-        const monthBudgetItem = store.budgets.find((budget: BudgetInterface) => {
-            return (
-              budget.categoryId === cat.categoryId &&
-              budget.month === new Date().getMonth()
-            );
-          }
-        ) || { amount: 0 };
-        // eslint-disable-next-line
-        const ytdBudgetItems = store.budgets.filter((budget: BudgetInterface) => {
-            return (
-              budget.categoryId === cat.categoryId &&
-              budget.month <= new Date().getMonth()
-            );
-          }
-        ) || { amount: 0 };
-        const ytdBudget = ytdBudgetItems.reduce(
-          // eslint-disable-next-line
-          (total: number, budget: BudgetInterface) => total + budget.amount,
-          0
-        );
-        return {
-          category: cat.category,
-          monthBudget: monthBudgetItem?.amount,
-          monthExpenses,
-          ytdExpenses,
-          ytdBudget,
-        };
-      }
-    );
+  const { data: categories } = useCategories();
+  const { data: transactions } = useTransactionsByYear(
+    new Date().getFullYear()
+  );
+  const { data: budgets } = useBudget();
 
-    setOverview(newOverview);
+  useEffect(() => {
+    if (categories && transactions && budgets) {
+      const newOverview: OverviewInterface[] = categories.map(
+        (c: CategoryInterface) => {
+          const monthExpenses = transactions
+            .filter((t: TransactionInterface) => {
+              return (
+                new Date(t.date).getMonth() === new Date().getMonth() &&
+                t.categoryId === c.categoryId
+              );
+            })
+            .reduce(
+              (total: number, transaction: TransactionInterface) =>
+                total + parseFloat(transaction.amount),
+              0
+            );
+          const ytdExpenses = store.transactions
+            .filter((transaction: TransactionInterface) => {
+              return transaction.categoryId === c.categoryId;
+            })
+            .reduce(
+              (total: number, transaction: TransactionInterface) =>
+                total + parseFloat(transaction.amount),
+              0
+            );
+          const monthBudgetItem = budgets.find((b: BudgetInterface) => {
+            return (
+              b.categoryId === c.categoryId && b.month === new Date().getMonth()
+            );
+          }) || { amount: "0" };
+          const ytdBudgetItems = budgets.filter((b: BudgetInterface) => {
+            return (
+              b.categoryId === c.categoryId && b.month <= new Date().getMonth()
+            );
+          }) || { amount: 0 };
+          const ytdBudget = ytdBudgetItems.reduce(
+            (total: number, budget: BudgetInterface) =>
+              total + parseFloat(budget.amount),
+            0
+          );
+          return {
+            category: c.category,
+            monthBudget: monthBudgetItem?.amount,
+            monthExpenses: monthExpenses.toFixed(0),
+            ytdExpenses: ytdExpenses.toFixed(0),
+            ytdBudget: ytdBudget.toFixed(0),
+          };
+        }
+      );
+
+      setOverview(newOverview);
+    }
     // eslint-disable-next-line
-    }, [store]);
+    }, [transactions, budgets, categories]);
 
   return (
     <Slide
