@@ -16,7 +16,7 @@ import {
   updateTransaction,
   TransactionModel,
 } from "../api/transactions";
-import { useAppStore, CategoryInterface, TransactionInterface } from "./store";
+import { TransactionInterface } from "./store";
 import FormBox from "./FormBox";
 import { useCategories, useTransactionsByYear } from "../api/queries";
 

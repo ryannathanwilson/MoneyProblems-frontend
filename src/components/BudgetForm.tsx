@@ -18,11 +18,7 @@ import {
   BudgetModel,
 } from "../api/budget";
 import FormBox from "./FormBox";
-import {
-  useBudgetByMonth,
-  useCategories,
-  useTransactionsByYear,
-} from "../api/queries";
+import { useBudgetByMonth, useCategories } from "../api/queries";
 
 const defaultBudget: BudgetInterface = {
   month: new Date().getMonth(),

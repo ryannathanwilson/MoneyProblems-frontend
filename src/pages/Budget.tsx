@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Slide,
