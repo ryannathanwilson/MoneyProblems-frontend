@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { TextField } from "@mui/material";
@@ -38,7 +38,15 @@ export default function TransactionForm({
   transactionProps = defaultTransaction,
   createNewTransaction = true,
 }: TransactionProps) {
-  const { data: categories } = useCategories();
+  const { data: categories, isLoading: categoriesIsLoading } = useCategories();
+  const [cat, setCat] = useState<string[]>();
+  useEffect(() => {
+    if (categories && !categoriesIsLoading) {
+      const catArray = categories.map((c) => c.categoryId);
+      setCat(catArray);
+    }
+  }, [categories, categoriesIsLoading]);
+
   const { refetch: refreshTransactions } = useTransactionsByYear(
     new Date().getFullYear()
   );
@@ -101,11 +109,11 @@ export default function TransactionForm({
             textAlign: "left",
           }}
         >
-          {categories &&
-            categories.map((c) => {
+          {cat &&
+            cat.map((c) => {
               return (
-                <MenuItem key={c.categoryId} value={c.categoryId}>
-                  {c.category}
+                <MenuItem key={c} value={c}>
+                  {c}
                 </MenuItem>
               );
             })}
