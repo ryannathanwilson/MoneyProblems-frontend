@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
+  Button,
   Slide,
   Accordion,
   AccordionSummary,
@@ -8,6 +9,7 @@ import {
   styled,
   Typography,
 } from "@mui/material";
+import { NavigateBefore, NavigateNext } from "@mui/icons-material";
 import { TransitionGroup } from "react-transition-group";
 import mapCategory from "../utilities/utilities";
 import { useCategories, useBudgetByMonth } from "../api/queries";
@@ -16,9 +18,34 @@ import Container from "../components/Container";
 import { useAppStore } from "../components/store";
 
 export default function BudgetPage() {
+  const [month, setMonth] = useState<number>(new Date().getMonth());
+  const [year, setYear] = useState<number>(new Date().getFullYear());
   const { store } = useAppStore();
-  const { data: budget } = useBudgetByMonth(0, 2022);
+  const { data: budget, refetch: refreshBudget } = useBudgetByMonth(
+    month,
+    year
+  );
   const { data: categories } = useCategories();
+  const goToNextMonth = () => {
+    if (month === 11) {
+      setMonth(0);
+      setYear((prev) => prev + 1);
+    } else {
+      setMonth((prev) => prev + 1);
+    }
+  };
+  const goToPreviousMonth = () => {
+    if (month === 0) {
+      setMonth(11);
+      setYear((prev) => prev - 1);
+    } else {
+      setMonth((prev) => prev - 1);
+    }
+  };
+  useEffect(() => {
+    refreshBudget();
+    // eslint-disable-next-line
+  }, [month]);
   const Flex = styled("div")({
     display: "flex",
     gridTemplateColumns: "120px 1fr",
@@ -44,7 +71,13 @@ export default function BudgetPage() {
     >
       <Container sx={{ gridGap: 0 }}>
         <Typography variant="h2" component="div" gutterBottom>
+          <Button onClick={goToPreviousMonth} role="button">
+            <NavigateBefore />
+          </Button>
           Current Month
+          <Button onClick={goToNextMonth} role="button">
+            <NavigateNext />
+          </Button>
         </Typography>
 
         {budget &&
